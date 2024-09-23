@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'foto',
     ];
 
     /**
@@ -41,4 +43,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $append = ['foto_url'];
+
+    public function getFotoUrlAttribute()
+    {
+        if ($this->foto && file_exists(Storage::path('public/upload/users/' . $this->foto))) {
+            return Storage::url('upload/users/' . $this->foto);
+        }
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&rounded=true&color=7F9CF5&background=random';
+    }
 }
