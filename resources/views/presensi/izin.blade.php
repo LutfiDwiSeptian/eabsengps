@@ -46,7 +46,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-12"> 
+    <div class="col-12">
         <form  method="GET" action="{{ url('/presensi/izin') }}">
             <div class="row">
                 <div class="col-6"> <!-- mengganti col biar sejajar sama form -->
@@ -54,7 +54,7 @@
                         <select name="bulan" id="bulan" class="fomr-control materelize">
                             <option value=""> Bulan</option>
                             @for($i = 1; $i <= 12; $i++ )
-                            <option  {{ Request('bulan') == $i ? 'selected' : '' }} value="{{ $i }}"> {{ $namabulan[$i] }}</option> 
+                            <option  {{ Request('bulan') == $i ? 'selected' : '' }} value="{{ $i }}"> {{ $namabulan[$i] }}</option>
                             @endfor
                         </select>
                     </div>
@@ -73,7 +73,7 @@
                                     $selected = '' ;
                                 }
                                 echo "<option $selected value='$t'>$t</option>";
-                             } 
+                             }
                             @endphp
                         </select>
                     </div>
@@ -91,16 +91,6 @@
 <div class="row">
     <div class="col">
         @foreach($dataizin as $d)
-        <?php
-        if($d->status == "sakit")
-            $status = "sakit";
-        elseif($d->status == "izin")
-            $status = "izin";
-        elseif($d->status == "cuti")
-            $status = "cuti";
-        elseif($d->status == "dinas")
-            $status = "dinas";
-        ?>
         <!-- untuk mengambil dari data base dan memasukan icon yang benar -->
         <div class="card mt-1 card_izin" kode_izin={{ $d->kode_izin }} statues_approved=" {{ $d->statues_approved }}" data-toggle="modal" data-target="#actionSheetIconed">
             <div class="card-body">
@@ -153,7 +143,7 @@
                         @else
                         <small><span style="font-weight:bold">Alasan Penolakan:</span> {{ $d->alasan_tolak }}</small>
                         @endif
-                    </div>   
+                    </div>
                     @elseif ($d->status == "sakit")
                     <div class="dataizin">
                         <h3 style="line-height: 3px; text-transform: uppercase">{{ $d->status }}</h3>
@@ -164,7 +154,7 @@
                         @else
                         <small><span style="font-weight:bold">Alasan Penolakan:</span> {{ $d->alasan_tolak }}</small></br>
                         @endif
-                    </div>     
+                    </div>
                         @elseif ($d->status == "cuti")
                         <div class="dataizin">
                             <h3 style="line-height: 3px; text-transform: uppercase">{{ $d->status }}</h3>
@@ -176,7 +166,7 @@
                             @else
                             <small><span style="font-weight:bold">Alasan Penolakan:</span> {{ $d->alasan_tolak }}</small></br>
                             @endif
-                        </div>      
+                        </div>
                         @elseif ($d->status == "dinas")
                         <div class="dataizin">
                             <h3 style="line-height: 3px; text-transform: uppercase">{{ $d->status }}</h3>
@@ -186,8 +176,8 @@
                             <small><span style="font-weight:bold">Alasan Penolakan:</span>{{ $d->alasan_tolak }}</small></br>
                             @else
                             <small><span style="font-weight:bold">Alasan Penolakan:</span> {{ $d->alasan_tolak }}</small></br>
-                            @endif   
-                        </div> 
+                            @endif
+                        </div>
                         @endif
                     <div class="status">
                         @if ($d->statues_approved == 0 )
@@ -256,7 +246,7 @@
                 <h5 class="modal-title">Aksi</h5>
             </div>
             <div class="modal-body" id="showact">
- 
+
             </div>
         </div>
     </div>

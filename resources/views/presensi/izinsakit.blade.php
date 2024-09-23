@@ -196,7 +196,7 @@
                             </select>
                             <div class="mb-3 mt-5">
                                <label class="form-label">Alasan Penolakan<span class="form-label-description"></span></label>
-                               <textarea class="form-control" name="alasan" rows="6" placeholder="Alasan penolakan"></textarea>
+                               <textarea class="form-control" name="alasan_tolak" rows="6" placeholder="Alasan penolakan"></textarea>
                              </div>
                         </div>
                     </div>
