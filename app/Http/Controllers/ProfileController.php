@@ -28,6 +28,10 @@ class ProfileController extends Controller
         $user->email = $request->email;
 
         if ($request->hasFile('foto')) {
+            if ($user->foto && file_exists('uploads/user/' . $user->foto)) {
+                unlink('uploads/user/' . $user->foto);
+            }
+
             $image = $request->file('foto');
             $name = time().'.'.$image->getClientOriginalExtension();
             $destinationPath = Storage::path('/public/upload/users');

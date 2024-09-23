@@ -13,6 +13,7 @@ use App\Http\Controllers\CutiController;
 use App\Http\Controllers\IzincutiController;
 use App\Http\Controllers\DinasController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,6 +108,18 @@ Route::middleware('auth:users')->group(function () {
     // Profile
     Route::get('/panel/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/panel/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Users
+    Route::group([
+        'prefix' => '/panel/users'
+    ], function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/store', [UserController::class, 'store'])->name('users.store');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::post('/{id}/update', [UserController::class, 'update'])->name('users.update');
+        Route::get('/{id}/delete', [UserController::class, 'delete'])->name('users.delete');
+    });
 
     //karyawan
     Route::get('/karyawan', [KaryawanController::class, 'index']);
