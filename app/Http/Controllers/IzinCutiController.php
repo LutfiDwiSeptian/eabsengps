@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,9 +15,9 @@ class IzinCutiController extends Controller
         return view('izincuti.create',compact('mastercuti'));
     }
 
-    public function store(Request $request) 
+    public function store(Request $request)
     {
-        $nik = Auth::guard('karyawan')->user()->nik; 
+        $nik = Auth::guard('karyawan')->user()->nik;
         $tanggal_dari = $request->tgl_izin_dari;
         $tanggal_sampai = $request->tgl_izin_sampai;
         $kodeizin = $request->kodeizin; // Change $kodeizin to $kode_izin for consistency.
@@ -26,7 +27,7 @@ class IzinCutiController extends Controller
 
         $bulan = date("m",strtotime($tanggal_dari));
         $tahun = date("Y",strtotime($tanggal_dari));
-        $thn = substr($tahun,2,2); 
+        $thn = substr($tahun,2,2);
 
         $lastizin = DB::table('pengajuan_izin')
         ->whereRaw('MONTH(tanggal)='.$bulan)
@@ -52,6 +53,12 @@ class IzinCutiController extends Controller
 
         $simpan = DB::table('pengajuan_izin')->insert($data);
         if($simpan){
+            NotificationService::sendNotificationAbsenToAllUsers(
+                'Izin Absen Baru',
+                'Ada karyawan yang mengajukan izin absen baru',
+                '/presensi/izinsakit'
+            );
+
             return redirect('/presensi/izin')->with('success','Data Berhasil Tersimpan');
         } else {
             return redirect('/presensi/izin')->with('error','Data tidak tersimpan');
@@ -65,7 +72,7 @@ class IzinCutiController extends Controller
         return view('izincuti.edit',compact('mastercuti','datacuti'));
     }
 
-    public function update($kode_izin, Request $request) 
+    public function update($kode_izin, Request $request)
     {
         $tanggal_dari = $request->tgl_izin_dari;
         $tanggal_sampai = $request->tgl_izin_sampai;
