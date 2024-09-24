@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\karyawan;   
+use App\Models\karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +55,7 @@ class PresensiController extends Controller
             $fileName = $formatName."png";
             $file = $folderPath . $fileName;
 
-            
+
             if ($radius > $lokasi_kantor->radius){
                 echo "Error|Jarak anda ".$radius." meter dari kantor|jarak";
             } else {
@@ -113,8 +113,8 @@ class PresensiController extends Controller
         return compact('meters');
     }
 
-    
-    public function editprofile() 
+
+    public function editprofile()
     {
         $nik = Auth::guard('karyawan')->user()->nik;
         $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
@@ -136,7 +136,7 @@ class PresensiController extends Controller
            $data = [
                'nama_lengkap' => $nama_lengkap,
                'no_hp' => $no_hp,
-               'foto' => $foto,     
+               'foto' => $foto,
            ];
        } else {
             $data = [
@@ -147,15 +147,17 @@ class PresensiController extends Controller
             ];
        }
 
-       $update = DB::table('karyawan')->where('nik', $nik)->update($data);
-       if ($update) {
-        if ($request->hasFile('foto')){
-            $folderPath = "public/upload/karyawan/";
-            $request->file('foto')->storeAs($folderPath, $foto);
-        }
-        return Redirect::back()->with(['success' => 'DATA BERHASIL TERSIMPAN']);
-       } else {
-        return Redirect::back()->with(['error'=> 'Data Gagal di Update']);
+       try {
+            $update = DB::table('karyawan')->where('nik', $nik)->update($data);
+
+            if ($request->hasFile('foto')){
+                $folderPath = "public/upload/karyawan/";
+                $request->file('foto')->storeAs($folderPath, $foto);
+            }
+
+            return Redirect::back()->with(['success' => 'DATA BERHASIL TERSIMPAN']);
+       } catch (\Throwable $th) {
+           return Redirect::back()->with(['error'=> 'Data Gagal di Update']);
        }
     }
 
@@ -198,7 +200,7 @@ class PresensiController extends Controller
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         return view ('presensi.izin', compact('dataizin','namabulan'));
     }
-    
+
     public function buatizin()
     {
         return view ('presensi.buatizin');
@@ -264,12 +266,12 @@ class PresensiController extends Controller
     }
 
     public function laporan()
-    {   
+    {
         $namabulan = ["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
         $karyawan = DB::table('karyawan')->orderBy('nama_lengkap')->get();
         return view('presensi.laporan', compact('namabulan','karyawan'));
     }
-    
+
     public function cetaklaporan(Request $request)
     {
         $nik = $request->nik;
@@ -290,7 +292,7 @@ class PresensiController extends Controller
     }
 
     public function rekap()
-    {   
+    {
         $namabulan = ["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
         $department = DB::table('department')->get();
         return view('presensi.rekap', compact('namabulan','department'));
@@ -369,7 +371,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_1,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[1]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -377,7 +379,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_2,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[2]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -385,7 +387,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_3,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[3]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -393,7 +395,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_4,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[4]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -401,7 +403,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_5,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[5]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -409,7 +411,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_6,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[6]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -417,7 +419,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_7,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[7]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -425,7 +427,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_8,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[8]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -433,7 +435,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_9,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[9]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -441,7 +443,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_10,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[10]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -449,7 +451,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_11,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[11]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -457,7 +459,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_12,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[12]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -465,7 +467,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_13,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[13]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -473,7 +475,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_14,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[14]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -481,7 +483,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_15,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[15]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -489,7 +491,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_16,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[16]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -497,7 +499,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_17,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[17]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -505,7 +507,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_18,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[18]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -513,7 +515,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_19,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[19]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -521,7 +523,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_20,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[20]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -529,7 +531,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_21,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[21]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -537,7 +539,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_22,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[22]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -545,7 +547,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_23,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[23]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -553,7 +555,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_24,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[24]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -561,7 +563,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_25,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[25]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -569,7 +571,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_26,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[26]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -577,7 +579,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_27,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[27]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -585,7 +587,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_28,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[28]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -593,7 +595,7 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_29,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[29]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
@@ -601,15 +603,15 @@ class PresensiController extends Controller
                  IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_30,
-                
+
                 MAX(IF(tgl_presensi = '$rangetanggal[30]',
                 CONCAT(
                 IFNULL(jam_in,'NA'),'|',
                 IFNULL(jam_out,'NA'),'|',
-                 IFNULL(presensi.status,'NA'),'|', 
+                 IFNULL(presensi.status,'NA'),'|',
                    IFNULL(presensi.kode_izin,'NA'),'|'
                 ),NULL)) as tgl_31
-                
+
                 FROM presensi
                 LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
                 WHERE tgl_presensi BETWEEN '$rangetanggal[0]' AND '$sampai'
@@ -632,7 +634,7 @@ class PresensiController extends Controller
             //mendefinisikan nama file
             header("content-Disposition: attachment; filename=Rekap Presensi Karyawan $time.xls");
         }
-        
+
         return view('presensi.cetakrekap', compact('rangetanggal','namabulan','bulan','tahun','rangetanggal','jmlhari','rekap'));
     }
 
@@ -649,7 +651,7 @@ class PresensiController extends Controller
        if (!empty($request->nik)) {
         $query->where('pengajuan_izin.nik', $request->nik);
        }
-       
+
        if (!empty($request->nama_lengkap)) {
         $query->where('nama_lengkap','like','%'.$request->nama_lengkap.'%');
        }
@@ -696,7 +698,7 @@ class PresensiController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with(['error' => 'Data gagal tersimpan']);
-        }   
+        }
 
         //$update = DB::table('pengajuan_izin')
         //->where('kode_izin',$kode_izin)
@@ -708,7 +710,7 @@ class PresensiController extends Controller
         //    return redirect::back()->with(['success'=>'Data berhasil di update']);
         //} else {
          //   return redirect::back()->with(['error'=>'Data gagal di update']);
-        
+
     }
 
     public function batalkanizinsakit($kode_izin)
@@ -758,7 +760,7 @@ class PresensiController extends Controller
         try {
             DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->delete();
             if ($docsid != null)
-                Storage::delete('/public/uploads/sid/' . $docsid);  
+                Storage::delete('/public/uploads/sid/' . $docsid);
             return redirect('/presensi/izin')->with(['success' => 'Data berhasil Terhapus']);
         } catch (\Exception $e) {
             return redirect('/presensi/izin')->with(['error' => 'Data gagal Terhapus']);

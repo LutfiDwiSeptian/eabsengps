@@ -12,6 +12,8 @@ use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\IzincutiController;
 use App\Http\Controllers\DinasController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,14 +27,14 @@ use App\Http\Controllers\DinasController;
 */
 Route::get('/', function () {
     return view('login'); // Pastikan ada rute ini
-}); 
+});
 
 Route::middleware('guest:karyawan')->group(function () {
 Route::get('/', function () {
         return view('auth.login');
     })->name('login');
 Route::post('/proseslogin', [AuthController::class, 'proseslogin']);
- 
+
 });
 
 Route::middleware('guest:users')->group(function () {
@@ -40,14 +42,14 @@ Route::middleware('guest:users')->group(function () {
             return view('auth.loginadmin');
         })->name('loginadmin');
 Route::post('/prosesloginadmin', [AuthController::class, 'prosesloginadmin']);
-     
+
 });
 
 Route::middleware('auth:karyawan')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
 
-    //presensi 
+    //presensi
     Route::get('/presensi/create', [PresensiController::class, 'create']);
     Route::post('/presensi/store', [PresensiController::class, 'store']);
 
@@ -102,13 +104,29 @@ Route::middleware('auth:karyawan')->group(function () {
 Route::middleware('auth:users')->group(function () {
     Route::get('/proseslogoutadmin',[AuthController::class,'proseslogoutadmin']);
     Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
-    
+
+    // Profile
+    Route::get('/panel/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/panel/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Users
+    Route::group([
+        'prefix' => '/panel/users'
+    ], function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/store', [UserController::class, 'store'])->name('users.store');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::post('/{id}/update', [UserController::class, 'update'])->name('users.update');
+        Route::get('/{id}/delete', [UserController::class, 'delete'])->name('users.delete');
+    });
+
     //karyawan
     Route::get('/karyawan', [KaryawanController::class, 'index']);
     Route::post('/karyawan/store', [KaryawanController::class, 'store']);
     Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
     Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
-    Route::delete('/karyawan/{nik}/delete', [KaryawanController::class, 'delete'])->name('karyawan.delete'); 
+    Route::delete('/karyawan/{nik}/delete', [KaryawanController::class, 'delete'])->name('karyawan.delete');
     //dpeartment
     Route::get('/department', [DepartmentController::class, 'index']);
     Route::post('/department/store', [DepartmentController::class, 'store']);
@@ -132,10 +150,10 @@ Route::middleware('auth:users')->group(function () {
     Route::get('presensi/izinsakit', [PresensiController::class, 'izinsakit']);
     Route::post('presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
     Route::get('/presensi/{kode_izin}/batalkanzizinsakit', [PresensiController::class, 'batalkanizinsakit']);
-  
+
     //laporan
     Route::get('/presensi/laporan', [PresensiController::class, 'laporan']);
-    Route::post('/presensi/cetaklaporan', [PresensiController::class,'cetaklaporan']);  
+    Route::post('/presensi/cetaklaporan', [PresensiController::class,'cetaklaporan']);
     Route::get('/presensi/rekap', [PresensiController::class, 'rekap']);
     Route::post('/presensi/cetakrekap', [PresensiController::class,'cetakrekap']);
 
