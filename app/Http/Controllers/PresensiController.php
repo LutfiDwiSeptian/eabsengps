@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Pengajuanizin;
+use App\Notifications\IzinAbsen;
 
 class PresensiController extends Controller
 {
@@ -663,6 +664,11 @@ class PresensiController extends Controller
        $query->orderBy('tanggal','desc');
        $izinsakit = $query->paginate(10 );
        $izinsakit->appends($request->all());
+
+       if (auth()->user()->unreadNotifications->count() > 0) {
+            auth()->user()->unreadNotifications->where('type', IzinAbsen::class)->markAsRead();
+        }
+
         return view('presensi.izinsakit', compact('izinsakit'));
     }
 

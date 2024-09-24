@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\NotificationService;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +16,9 @@ class izinabsenController extends Controller
         return view ('izin.create');
     }
 
-    public function store(Request $request) 
+    public function store(Request $request)
     {
-        $nik = Auth::guard('karyawan')->user()->nik; 
+        $nik = Auth::guard('karyawan')->user()->nik;
         $tanggal_dari = $request->tgl_izin_dari;
         $tanggal_sampai = $request->tgl_izin_sampai;
         $keterangan = $request->keterangan;
@@ -25,7 +26,7 @@ class izinabsenController extends Controller
 
         $bulan = date("m",strtotime($tanggal_dari));
         $tahun = date("Y",strtotime($tanggal_dari));
-        $thn = substr($tahun,2,2); 
+        $thn = substr($tahun,2,2);
 
         $lastizin = DB::table('pengajuan_izin')
         ->whereRaw('MONTH(tanggal)='.$bulan)
@@ -50,6 +51,12 @@ class izinabsenController extends Controller
 
         $simpan = DB::table('pengajuan_izin')->insert($data);
         if($simpan){
+            NotificationService::sendNotificationAbsenToAllUsers(
+                'Izin Absen Baru',
+                'Ada karyawan yang mengajukan izin absen baru',
+                '/presensi/izinsakit'
+            );
+
             return redirect('/presensi/izin')->with('success','Data Berhasil Tersimpan');
         } else {
             return redirect('/presensi/izin')->with('error','Data tidak tersimpan');
@@ -67,7 +74,7 @@ class izinabsenController extends Controller
         $tanggal_dari = $request->tgl_izin_dari;
         $tanggal_sampai = $request->tgl_izin_sampai;
         $keterangan = $request->keterangan;
-        
+
         try {
             $data = [
                 'tanggal' => $tanggal_dari,
