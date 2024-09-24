@@ -44,5 +44,6 @@ class karyawan extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'nik' => 'string',
     ];
 }
