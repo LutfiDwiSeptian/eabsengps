@@ -14,6 +14,8 @@ use App\Http\Controllers\IzincutiController;
 use App\Http\Controllers\DinasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Artisan;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -161,4 +163,17 @@ Route::middleware('auth:users')->group(function () {
     Route::get('/konfigurasi/lokasikantor',[KonfigurasiController::class,'lokasikantor']);
     Route::post('/konfigurasi/updatelokasi',[KonfigurasiController::class,'updatelokasi']);
 
+    //storage link
+    Route::get('/link', function () {
+        Artisan::call('storage:link');
+    });
+
+    //config:clear  
+    Route::get('/clear', function (){
+        Artisan::call('config:clear');
+    });
+
+    Route::get('/link-alternative', function(){
+        Artisan::call('storage:link --relative');
+    });
 });
